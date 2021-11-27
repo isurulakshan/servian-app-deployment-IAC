@@ -1,0 +1,43 @@
+version: "3"
+# This compose file is ONLY used for spinning up a local Postgres container for development.
+services:
+  postgres:
+    image: "postgres:12-alpine"
+    container_name: "postgres"
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=12345
+      - POSTGRES_DB=testdb
+    volumes:
+      - "postgres_data2:/var/lib/postgresql/data"
+  servient_db_init:
+    image: servian/techchallengeapp:latest
+    container_name: "servientapp-db-init"
+    # ports:
+    #   - "8080:3000"
+    environment:
+      - VTT_DBUSER=postgres
+      - VTT_DBNAME=testdb
+      - VTT_DBPASSWORD=12345
+      - VTT_DBPORT=5432
+      - VTT_DBHOST=postgres
+    command: updatedb
+  servientapp:
+    image: servian/techchallengeapp:latest
+    container_name: "servientapp"
+    ports:
+      - "8080:3000"
+    environment:
+      - VTT_DBUSER=postgres
+      - VTT_DBNAME=testdb
+      - VTT_DBPASSWORD=12345
+      - VTT_DBPORT=5432
+      - VTT_DBHOST=postgres
+      - VTT_LISTENHOST=0.0.0.0
+      - VTT_LISTENPORT=3000
+    command: serve
+volumes:
+  postgres_data2:
+    driver: local
