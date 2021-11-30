@@ -16,10 +16,10 @@ az ad sp create-for-rbac --name servian_app_spn --role Contributor
 Export SPN credentials using terraform environment variables.
 This can be used with any CI/CD tool as global variables (example: GitLab)
 ```
-export TF_VAR_subscription_id="dac4cab6-7da3-4bba-a0c6-b93e33e6717a"
-export TF_VAR_client_id="9b133ea1-464a-4510-b4c9-6fe26e0886f5"         
-export TF_VAR_client_secret="vXuCBQ0AI~QCfjrBH6tfY2r77mnfmH1huk"      
-export TF_VAR_tenant_id="67e62596-f24c-4eae-9a15-e9aa38182dfd"   
+export TF_VAR_subscription_id="<>"
+export TF_VAR_client_id="<>"         
+export TF_VAR_client_secret="<>"      
+export TF_VAR_tenant_id="<>"   
 ```
 
 ## Steps to proceed (Open up a bash shell and do the following steps)
