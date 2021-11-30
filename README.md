@@ -2,7 +2,7 @@
 
 This solution is depend on the servian tech app assessment.
 
-##Pre requisites
+## Pre requisites
 - Install terraform into local machine
 https://learn.hashicorp.com/tutorials/terraform/install-cli
 
