@@ -11,10 +11,10 @@ terraform {
 provider "azurerm" {
   features {}
 
-  subscription_id             = var.subscription_id
-  client_id                   = var.client_id
-  client_secret               = var.client_secret
-  tenant_id                   = var.tenant_id
+  subscription_id             = var.subscription_id #Azure subscription id
+  client_id                   = var.client_id # Azure AD SPN client id / app id
+  client_secret               = var.client_secret # Azure AD SPN client secret
+  tenant_id                   = var.tenant_id # Azure tenant id
 }
 
 #Create azure resource group
@@ -24,9 +24,6 @@ resource "azurerm_resource_group" "rg" {
   tags = {
     "environment" = var.environment
   }
-}
-output "resource_group_id" {
-  value = azurerm_resource_group.rg.id
 }
 
 #Create azure virtual network
