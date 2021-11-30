@@ -11,10 +11,10 @@ terraform {
 provider "azurerm" {
   features {}
 
-  subscription_id             = var.subscription_id #Azure subscription id
-  client_id                   = var.client_id # Azure AD SPN client id / app id
-  client_secret               = var.client_secret # Azure AD SPN client secret
-  tenant_id                   = var.tenant_id # Azure tenant id
+  subscription_id = var.subscription_id #Azure subscription id
+  client_id       = var.client_id       # Azure AD SPN client id / app id
+  client_secret   = var.client_secret   # Azure AD SPN client secret
+  tenant_id       = var.tenant_id       # Azure tenant id
 }
 
 #Create azure resource group
@@ -50,34 +50,28 @@ resource "azurerm_network_security_group" "nsg" {
   name                = "${var.customer_name}-nsg"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
-
-  security_rule {
-    name                       = "SSH"
-    priority                   = 1001
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "22"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
-    security_rule {
-    name                       = "APP_INB"
-    priority                   = 1002
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "*"
-    source_port_range          = "*"
-    destination_port_range     = "8080"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
-
   tags = {
     environment = var.environment
   }
 }
+#NSG rules loop by local.tf file
+resource "azurerm_network_security_rule" "nsg_rule" {
+  for_each                    = local.nsgrules
+  name                        = each.key
+  direction                   = each.value.direction
+  access                      = each.value.access
+  priority                    = each.value.priority
+  protocol                    = each.value.protocol
+  source_port_range           = each.value.source_port_range
+  destination_port_range      = each.value.destination_port_range
+  source_address_prefix       = each.value.source_address_prefix
+  destination_address_prefix  = each.value.destination_address_prefix
+  resource_group_name         = azurerm_resource_group.rg.name
+  network_security_group_name = azurerm_network_security_group.nsg.name
+
+
+}
+
 #Create public IPs
 resource "azurerm_public_ip" "pip" {
   name                = "${var.customer_name}-pip"
@@ -153,12 +147,12 @@ resource "azurerm_linux_virtual_machine" "vm" {
 resource "null_resource" "provisioner_app" {
 
   connection {
-    type  = "ssh"
-    host  = azurerm_public_ip.pip.ip_address
-    user  = "adminuser"
-    private_key = tls_private_key.ssh.private_key_pem 
-    agent = true
-    
+    type        = "ssh"
+    host        = azurerm_public_ip.pip.ip_address
+    user        = "adminuser"
+    private_key = tls_private_key.ssh.private_key_pem
+    agent       = true
+
 
   }
 
