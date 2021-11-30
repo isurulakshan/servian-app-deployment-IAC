@@ -12,7 +12,7 @@ az login
 az ad sp create-for-rbac --name servian_app_spn --role Contributor
 ```
 
-- Export Environment vairables in the current session(SPN credentials).
+- Export Environment variables in the current session(SPN credentials).
 
 This can be used with any CI/CD tool as global variables (example: GitLab).
 ```
