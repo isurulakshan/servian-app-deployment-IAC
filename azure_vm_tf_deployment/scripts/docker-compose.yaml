@@ -1,6 +1,7 @@
 version: "3.0"
 # This is the docker compose muti container yaml file which deploy postgre db, db init & servian app
 services:
+  #Deploy postgres container
   postgres:
     image: "postgres:12-alpine"
     restart: always
@@ -13,6 +14,7 @@ services:
       - POSTGRES_DB=testdb
     volumes:
       - "postgres_data2:/var/lib/postgresql/data"
+  #Initialize database with test data
   servient_db_init:
     image: servian/techchallengeapp:latest
     restart: always
@@ -26,6 +28,7 @@ services:
     command: updatedb
     depends_on:
       - postgres
+  #Deploy servian app with the latest build
   servientapp:
     image: servian/techchallengeapp:latest
     container_name: "servientapp"
