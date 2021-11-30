@@ -1,11 +1,12 @@
-version: "3"
-# This compose file is ONLY used for spinning up a local Postgres container for development.
+version: "3.0"
+# This is the docker compose muti container yaml file which deploy postgre db, db init & servian app
 services:
   postgres:
     image: "postgres:12-alpine"
+    restart: always
     container_name: "postgres"
     ports:
-      - "5432:5432"
+      - 5432:5432
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=12345
@@ -14,9 +15,8 @@ services:
       - "postgres_data2:/var/lib/postgresql/data"
   servient_db_init:
     image: servian/techchallengeapp:latest
+    restart: always
     container_name: "servientapp-db-init"
-    # ports:
-    #   - "8080:3000"
     environment:
       - VTT_DBUSER=postgres
       - VTT_DBNAME=testdb
@@ -24,6 +24,8 @@ services:
       - VTT_DBPORT=5432
       - VTT_DBHOST=postgres
     command: updatedb
+    depends_on:
+      - postgres
   servientapp:
     image: servian/techchallengeapp:latest
     container_name: "servientapp"
@@ -38,6 +40,8 @@ services:
       - VTT_LISTENHOST=0.0.0.0
       - VTT_LISTENPORT=3000
     command: serve
+    depends_on: 
+      - servient_db_init
 volumes:
   postgres_data2:
-    driver: local
+ 
